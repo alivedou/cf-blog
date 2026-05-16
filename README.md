@@ -81,7 +81,7 @@
 | 定制项 | 文件路径 | 说明 |
 | :--- | :--- | :--- |
 | **网站名称与描述** | `metadata.json` | 修改 `name` 和 `description` 字段。 |
-| **博主信息 (头像内容/姓名/简介)** | `src/components/Sidebar.tsx` | 在 `Profile Section` 中修改姓名、职业描述及头像文字。 |
+| **博主信息 (头像/姓名/简介)** | `src/components/Sidebar.tsx` | 在文件顶部的 `developerInfo` 常量中修改姓名、简介、头像文字或图片 URL。 |
 | **社交链接/推荐链接** | `src/components/Sidebar.tsx` | 修改 `recommendedLinks` 数组中的 URL。 |
 | **文章内容** | `content/posts/` | 增加或删除 `.md` 文件即可更新博客内容。 |
 | **AI 密钥** | `.env` 或环境变量 | 修改 `GEMINI_API_KEY` 以启用 AI 功能。 |

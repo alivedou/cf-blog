@@ -91,9 +91,9 @@ Welcome to my new blog! This project is built with React, Express, and inspired 
     if (!content) return res.status(400).json({ error: "Content is required" });
 
     try {
-      const prompt = `Summarize the following blog post in 3 concise bullet points. Use the same language as the post.
+      const prompt = `请用 3 个简洁的列点总结以下博客文章内容。使用与文章相同的语言。
       
-      Post:
+      文章内容:
       ${content.substring(0, 5000)}`;
 
       const result = await ai.models.generateContent({
@@ -103,15 +103,15 @@ Welcome to my new blog! This project is built with React, Express, and inspired 
 
       res.json({ summary: result.text });
     } catch (error) {
-      console.error("Summarization error:", error);
-      res.status(500).json({ error: "Summarization failed" });
+      console.error("总结失败:", error);
+      res.status(500).json({ error: "总结失败" });
     }
   });
 
   // API 路由：AI 辅助搜索，根据查询返回相关文章
   app.post("/api/ai/search", async (req, res) => {
     const { query } = req.body;
-    if (!query) return res.status(400).json({ error: "Query is required" });
+    if (!query) return res.status(400).json({ error: "查询参数是必须的" });
 
     try {
       const files = await fs.readdir(POSTS_DIR);
@@ -119,16 +119,16 @@ Welcome to my new blog! This project is built with React, Express, and inspired 
         files.map(async (file) => {
           const content = await fs.readFile(path.join(POSTS_DIR, file), "utf-8");
           const { data } = matter(content);
-          return `Title: ${data.title}, Tags: ${(data.tags || []).join(",")}, Slug: ${file.replace(".md", "")}`;
+          return `标题: ${data.title}, 标签: ${(data.tags || []).join(",")}, Slug: ${file.replace(".md", "")}`;
         })
       );
 
-      const prompt = `You are a blog search assistant. Given the following list of blog posts and a user query, identify the most relevant post slugs. Return ONLY a comma-separated list of slugs.
+      const prompt = `你是一个博客搜索助手。根据以下博客文章列表和用户的查询请求，识别出最相关的文章 slug。仅返回文章 slug 的逗号分隔列表。
       
-      Posts:
+      文章列表:
       ${postsContext.join("\n")}
       
-      User Query: ${query}`;
+      用户查询: ${query}`;
 
       const result = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
@@ -138,12 +138,12 @@ Welcome to my new blog! This project is built with React, Express, and inspired 
       const slugs = result.text.split(",").map(s => s.trim());
       res.json({ slugs });
     } catch (error) {
-      console.error("AI Search error:", error);
-      res.status(500).json({ error: "AI search failed" });
+      console.error("AI 搜索失败:", error);
+      res.status(500).json({ error: "AI 搜索失败" });
     }
   });
 
-  // Vite preview middleware
+  // Vite 开发服务器中间件
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -159,7 +159,7 @@ Welcome to my new blog! This project is built with React, Express, and inspired 
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`服务器运行在 http://localhost:${PORT}`);
   });
 }
 

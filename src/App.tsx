@@ -153,7 +153,7 @@ export default function App() {
       <button
         onClick={() => setIsDark(!isDark)}
         className="fixed top-6 right-8 z-50 p-3 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-gray-200 dark:border-zinc-800 shadow-lg hover:shadow-xl hover:scale-110 transition-all text-gray-600 dark:text-zinc-400 group"
-        title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        title={isDark ? "切换到浅色模式" : "切换到深色模式"}
       >
         {isDark ? (
           <Sun size={20} className="group-hover:text-yellow-500 transition-colors" />
@@ -206,7 +206,7 @@ export default function App() {
                   className="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition-colors mb-10 group"
                 >
                   <ChevronLeft className="mr-2 group-hover:-translate-x-1 transition-transform" size={20} />
-                  Back to Articles
+                  返回博客列表
                 </button>
 
                 {selectedPost.metadata.image && (
@@ -253,7 +253,7 @@ export default function App() {
                         disabled={summarizing}
                         className="flex items-center space-x-2 text-xs font-bold bg-indigo-50 dark:bg-zinc-900 text-indigo-600 dark:text-indigo-400 px-3 py-2 rounded-xl hover:bg-indigo-100 transition-all border border-indigo-100 dark:border-indigo-900/50"
                       >
-                        {summarizing ? 'Summarizing...' : 'AI Summary'}
+                        {summarizing ? '正在生成总结...' : 'AI 总结'}
                       </button>
                       <button className="hover:text-indigo-600 transition-colors"><Share2 size={20} /></button>
                       <button className="hover:text-indigo-600 transition-colors"><MessageCircle size={20} /></button>
@@ -268,7 +268,7 @@ export default function App() {
                       animate={{ opacity: 1, height: 'auto' }}
                       className="mb-10 p-6 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl"
                     >
-                      <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500 mb-3">Post Summary</h3>
+                      <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500 mb-3">AI 文章总结</h3>
                       <div className="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed space-y-2">
                         <Markdown>{summary}</Markdown>
                       </div>
@@ -291,22 +291,26 @@ export default function App() {
               >
                 <div className="flex flex-col mb-16">
                   <h1 className="text-6xl font-black text-gray-900 dark:text-gray-100 mb-4 tracking-tighter">
-                    {activeTab === 'home' ? 'Discover Stories' 
-                     : activeTab === 'tags' ? (selectedTag ? `# ${selectedTag}` : 'Explore Tags')
+                    {activeTab === 'home' ? '探索故事' 
+                     : activeTab === 'tags' ? (selectedTag ? `# ${selectedTag}` : '浏览标签')
+                     : activeTab === 'archives' ? '归档'
+                     : activeTab === 'about' ? '关于我'
                      : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                   </h1>
                   <p className="text-xl text-gray-500 dark:text-zinc-500 font-medium">
                     {activeTab === 'home' 
-                      ? 'Thoughts on design, tech and the creative process.' 
-                      : activeTab === 'tags' ? (selectedTag ? `Articles tagged with "${selectedTag}"` : 'Browse all topics and categories.')
-                      : `Exploring ${activeTab} and collections.`}
+                      ? '分享关于设计、技术与创意过程的思考。' 
+                      : activeTab === 'tags' ? (selectedTag ? `标签为 "${selectedTag}" 的文章` : '浏览所有话题。')
+                      : activeTab === 'archives' ? '回顾过往的文章动态。'
+                      : activeTab === 'about' ? '你好，很高兴见到你！'
+                      : `正在探索 ${activeTab}。`}
                   </p>
                   {activeTab === 'tags' && selectedTag && (
                     <button 
                       onClick={() => setSelectedTag(null)}
                       className="mt-4 text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center"
                     >
-                      <X size={14} className="mr-1" /> Clear Filter
+                      <X size={14} className="mr-1" /> 清除筛选
                     </button>
                   )}
                 </div>
@@ -355,7 +359,7 @@ export default function App() {
                           <PostCard key={post.slug} post={post} onClick={handlePostClick} />
                         )) : (
                           <div className="col-span-full py-20 text-center">
-                            <p className="text-gray-500 text-lg">No posts found for this category.</p>
+                            <p className="text-gray-500 text-lg">该分类下暂无文章。</p>
                           </div>
                         )}
                       </div>

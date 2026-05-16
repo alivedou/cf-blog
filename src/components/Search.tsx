@@ -53,7 +53,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ posts, onResultClick }) =>
           type="text"
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Search articles (try 'hugo' or 'design')..."
+          placeholder="搜索文章 (尝试输入 'hugo' 或 '设计')..."
           className="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl pl-12 pr-24 py-4 shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all text-gray-900 dark:text-zinc-100"
         />
         <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -61,14 +61,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({ posts, onResultClick }) =>
           onClick={handleAISearch}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-linear-to-r from-indigo-500 to-purple-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:shadow-lg transition-all"
         >
-          AI Search
+          AI 搜索
         </button>
       </div>
 
       {isSearching && (
         <div className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-4 z-50">
           <div className="flex justify-between items-center mb-4 px-2">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{results.length} Results Found</span>
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">找到 {results.length} 条结果</span>
             <button onClick={() => setIsSearching(false)} className="p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors">
               <X size={16} className="text-gray-400" />
             </button>
@@ -87,7 +87,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ posts, onResultClick }) =>
                 <p className="text-xs text-gray-500 dark:text-zinc-500 line-clamp-1">{post.description}</p>
               </div>
             )) : (
-              <p className="text-center text-gray-500 py-4 text-sm">No matches found.</p>
+              <p className="text-center text-gray-500 py-4 text-sm">未找到匹配文章。</p>
             )}
           </div>
         </div>

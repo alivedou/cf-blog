@@ -40,10 +40,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
         </p>
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center text-xs text-gray-400 space-x-4">
-            <span className="flex items-center"><Calendar size={14} className="mr-1" /> {format(new Date(post.date), 'MMM d, yyyy')}</span>
+            <span className="flex items-center"><Calendar size={14} className="mr-1" /> {format(new Date(post.date), 'yyyy年MM月dd日')}</span>
           </div>
           <span className="text-sm font-semibold text-gray-900 dark:text-zinc-100 flex items-center group-hover:translate-x-1 transition-transform">
-            Read More <ArrowRight size={16} className="ml-1" />
+            阅读更多 <ArrowRight size={16} className="ml-1" />
           </span>
         </div>
       </div>

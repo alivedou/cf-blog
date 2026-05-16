@@ -14,11 +14,23 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActiveTab, isDark, toggleDark, bgImage, setBgImage }) => {
+  // --- 开发者配置区域 (Developer Settings) ---
+  const developerInfo = {
+    name: "Jane Doe",
+    bio: "资深创意开发者 & 作家",
+    avatar: {
+      text: "JD", // 头像显示的文字
+      imageUrl: "", // 如果有图片 URL，请填写在此处，否则将显示文字头像
+      gradientFrom: "from-indigo-500", // 渐变起始颜色
+      gradientTo: "to-purple-600",     // 渐变结束颜色
+    }
+  };
+
   const menuItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'archives', label: 'Archives', icon: Archive },
-    { id: 'tags', label: 'Tags', icon: Tag },
-    { id: 'about', label: 'About', icon: User },
+    { id: 'home', label: '首页', icon: Home },
+    { id: 'archives', label: '归档', icon: Archive },
+    { id: 'tags', label: '标签', icon: Tag },
+    { id: 'about', label: '关于', icon: User },
   ];
 
   const recommendedLinks = [
@@ -43,16 +55,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
 
       {/* Profile Section */}
       <div className="flex flex-col items-center mb-10 text-center">
-        <div className="w-24 h-24 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg ring-4 ring-white dark:ring-zinc-800">
-          JD
+        <div className={cn(
+          "w-24 h-24 rounded-full mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg ring-4 ring-white dark:ring-zinc-800 overflow-hidden",
+          !developerInfo.avatar.imageUrl && `bg-linear-to-br ${developerInfo.avatar.gradientFrom} ${developerInfo.avatar.gradientTo}`
+        )}>
+          {developerInfo.avatar.imageUrl ? (
+            <img src={developerInfo.avatar.imageUrl} alt={developerInfo.name} className="w-full h-full object-cover" />
+          ) : (
+            developerInfo.avatar.text
+          )}
         </div>
-        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">Jane Doe</h1>
-        <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1 font-medium">Creative Developer & Writer</p>
+        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{developerInfo.name}</h1>
+        <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1 font-medium">{developerInfo.bio}</p>
       </div>
 
-      {/* Main Navigation */}
+      {/* 主导航栏 */}
       <nav className="space-y-1 mb-8">
-        <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">Menu</p>
+        <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">菜单</p>
         {menuItems.map((item) => (
           <button
             key={item.id}
@@ -70,9 +89,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
         ))}
       </nav>
 
-      {/* Recommended Links Section */}
+      {/* 推荐链接区域 */}
       <div className="space-y-1">
-        <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">Recommended</p>
+        <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">推荐</p>
         {recommendedLinks.map((link) => (
           <a
             key={link.label}
@@ -90,15 +109,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
         ))}
       </div>
 
-      {/* Bottom Actions */}
+      {/* 底部操作区域 */}
       <div className="mt-auto space-y-4 pt-6 border-t border-gray-100 dark:border-zinc-900">
         <div className="px-4">
           <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500 flex items-center">
-            <ImageIcon size={10} className="mr-1" /> Background
+            <ImageIcon size={10} className="mr-1" /> 自定义背景
           </p>
           <input 
             type="text" 
-            placeholder="Image URL..."
+            placeholder="图片 URL..."
             value={bgImage}
             onChange={(e) => setBgImage(e.target.value)}
             className="w-full text-[10px] bg-white/40 dark:bg-zinc-900/50 border border-gray-300 dark:border-zinc-800 rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 outline-hidden transition-all text-zinc-700 dark:text-zinc-400"
@@ -115,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
             <Moon size={20} className="group-hover:text-indigo-500 transition-colors" />
           )}
           <span className="ml-2 text-xs font-semibold uppercase tracking-[0.15em]">
-            {isDark ? 'Light' : 'Dark'} Mode
+            {isDark ? '切换浅色' : '切换深色'} 模式
           </span>
         </button>
       </div>
