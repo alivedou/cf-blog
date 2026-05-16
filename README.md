@@ -56,3 +56,23 @@
 1.  **构建**：本地或服务器执行 `npm run build`。
 2.  **运行**：确保已安装 Node.js，执行 `npm run start`。
 3.  **进程守护**：建议使用 PM2 保持后台运行：`pm2 start dist/server.cjs --name ai-blog`。
+
+---
+
+## 🛠 个性化定制
+
+为了让博客更具个性，您可以在部署前后修改以下配置：
+
+| 定制项 | 文件路径 | 说明 |
+| :--- | :--- | :--- |
+| **网站名称与描述** | `metadata.json` | 修改 `name` 和 `description` 字段。 |
+| **博主信息 (头像内容/姓名/简介)** | `src/components/Sidebar.tsx` | 在 `Profile Section` 中修改姓名、职业描述及头像文字。 |
+| **社交链接/推荐链接** | `src/components/Sidebar.tsx` | 修改 `recommendedLinks` 数组中的 URL。 |
+| **文章内容** | `content/posts/` | 增加或删除 `.md` 文件即可更新博客内容。 |
+| **AI 密钥** | `.env` 或环境变量 | 修改 `GEMINI_API_KEY` 以启用 AI 功能。 |
+| **默认主题色** | `src/index.css` | 通过修改 Tailwind 的配置或 CSS 变量调整全站色调。 |
+
+---
+
+## 📄 许可证
+本项目基于 MIT 许可证开源。您可以自由复刻、修改并用于个人或商业用途。
