@@ -92,7 +92,7 @@ export const THEME_COLOR = "indigo";
 
 // 10. 网站背景图片透明度（0.0 到 1.0 之间，数值越小，背景图越清晰）
 // 建议：浅色模式 0.7-0.9，深色模式 0.8-0.95
-export const SITE_BG_OPACITY = 0.55;
+export const SITE_BG_OPACITY = 0.75;
 
 
 /**
