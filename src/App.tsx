@@ -553,10 +553,12 @@ export default function App() {
                           <div className="space-y-12">
                             {/* 置顶文章区域 */}
                             {activeTab === 'home' && posts.some(p => p.sticky !== null && p.sticky !== undefined) && (
-                              <div>
-                                <h2 className="text-xl md:text-2xl font-black mb-6 flex items-center text-gray-900 dark:text-zinc-100">
-                                  <Pin className="mr-2 text-primary rotate-45" size={24} /> 推荐阅读
-                                </h2>
+                              <div className="mb-12">
+                                <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md border border-white/20 dark:border-zinc-800/20 shadow-sm mb-6">
+                                  <h2 className="text-xl md:text-2xl font-black flex items-center text-gray-900 dark:text-zinc-100">
+                                    <Pin className="mr-2 text-primary rotate-45" size={24} /> 推荐阅读
+                                  </h2>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                                   {posts.filter(p => p.sticky !== null && p.sticky !== undefined).slice(0, 4).map(post => (
                                     <PostCard key={post.slug} post={post} onClick={handlePostClick} isSticky={true} />
@@ -568,9 +570,11 @@ export default function App() {
                             {/* 常规文章列表区域 */}
                             <div>
                               {activeTab === 'home' && posts.some(p => p.sticky !== null && p.sticky !== undefined) && (
-                                <h2 className="text-xl md:text-2xl font-black mb-6 flex items-center text-gray-900 dark:text-zinc-100 mt-12">
-                                  全部文章
-                                </h2>
+                                <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md border border-white/20 dark:border-zinc-800/20 shadow-sm mb-6 mt-4">
+                                  <h2 className="text-xl md:text-2xl font-black flex items-center text-gray-900 dark:text-zinc-100">
+                                    全部文章
+                                  </h2>
+                                </div>
                               )}
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                                 {posts.filter(post => {

@@ -19,6 +19,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActiveTab, bgImage, setBgImage, onShare }) => {
+  const [isBgEditOpen, setIsBgEditOpen] = React.useState(false);
+
   return (
     <aside className={cn(
       // 样式说明：fixed 定位，毛玻璃效果 (backdrop-blur)，平滑过度 (transition-transform)
@@ -34,9 +36,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
       </button>
 
       {/* 侧边栏主内容区：设置 flex-1 并开启滚动，防止内容过多显示不全 */}
-      <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
         {/* 博主个人名片展示 */}
-        <div className="flex flex-col items-center mb-10 text-center">
+        <div className="flex flex-col items-center mb-8 text-center">
           <img 
             src={AUTHOR_AVATAR}
             alt="avatar"
@@ -58,14 +60,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
 
 
         {/* 主导航菜单：遍历渲染配置中的菜单项 */}
-        <nav className="space-y-1 mb-8">
-          <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">菜单导航</p>
+        <nav className="space-y-1 mb-6">
+          <p className="px-4 mb-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">菜单导航</p>
           {MENU_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={cn(
-                "w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200",
+                "w-full flex items-center px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200",
                 activeTab === item.id 
                   ? "bg-primary text-white shadow-md"
                   : "text-zinc-700 dark:text-zinc-400 hover:bg-gray-200/50 dark:hover:bg-zinc-800/50"
@@ -78,61 +80,72 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
         </nav>
 
         {/* 社交/推荐链接：点击会在新窗口打开 */}
-        <div className="space-y-1">
-          <p className="px-4 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">发现更多</p>
-          {RECOMMENDED_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-400 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:shadow-sm group transition-all duration-200"
-            >
-              <div className="flex items-center">
-                <link.icon className="w-5 h-5 mr-3 text-gray-400 group-hover:text-primary transition-colors" />
-                {link.label}
-              </div>
-              <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300" />
-            </a>
-          ))}
+        <div>
+          <p className="px-4 mb-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500">发现更多</p>
+          <div className="grid grid-cols-2 gap-2 px-1">
+            {RECOMMENDED_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center p-3 text-[11px] font-bold text-zinc-700 dark:text-zinc-400 bg-white/40 dark:bg-zinc-800/40 rounded-xl hover:bg-primary hover:text-white hover:shadow-md group transition-all duration-300 border border-gray-200/50 dark:border-zinc-700/50"
+                title={link.label}
+              >
+                <link.icon className="w-5 h-5 mb-1.5 text-gray-400 group-hover:text-white transition-colors" />
+                <span className="line-clamp-1 text-center">{link.label}</span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* 底部操作区：固定功能按钮 */}
-      <div className="p-8 pt-6 border-t border-gray-100 dark:border-zinc-900 bg-inherit backdrop-blur-xl">
-        {/* 自定义背景图输入框 */}
-        <div className="px-4 pb-4">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500 flex items-center">
-            <ImageIcon size={10} className="mr-1" /> 自定义背景
-          </p>
-          <div className="relative group">
-            <input 
-              type="text" 
-              placeholder="外链图片 URL..."
-              value={bgImage}
-              onChange={(e) => setBgImage(e.target.value)}
-              className="w-full text-[10px] bg-white/40 dark:bg-zinc-900/50 border border-gray-300 dark:border-zinc-800 rounded-lg p-2 pr-8 focus:ring-1 focus:ring-primary outline-hidden transition-all text-zinc-700 dark:text-zinc-400"
-            />
-            {bgImage && (
-              <button 
-                onClick={() => setBgImage('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
-                title="清除背景图"
-              >
-                <X size={12} />
-              </button>
-            )}
+      {/* 底部操作区：并排按钮设计 */}
+      <div className="p-4 pt-4 border-t border-gray-100 dark:border-zinc-900 bg-inherit backdrop-blur-xl">
+        {/* 背景编辑弹窗式输入框 */}
+        {isBgEditOpen && (
+          <div className="px-1 pb-3 mb-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="relative group">
+              <input 
+                type="text" 
+                autoFocus
+                placeholder="输入背景图 URL..."
+                value={bgImage}
+                onChange={(e) => setBgImage(e.target.value)}
+                className="w-full text-[10px] bg-white/60 dark:bg-zinc-900/60 border border-primary/30 dark:border-primary/20 rounded-lg p-2 pr-8 focus:ring-1 focus:ring-primary outline-hidden transition-all text-zinc-700 dark:text-zinc-400 shadow-inner"
+              />
+              {bgImage && (
+                <button 
+                  onClick={() => setBgImage('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* 分享网站按钮 */}
-        <div className="px-4 mt-2">
+        <div className="grid grid-cols-2 gap-2 px-1">
+          <button
+            onClick={() => setIsBgEditOpen(!isBgEditOpen)}
+            className={cn(
+              "flex items-center justify-center space-x-1.5 py-2.5 rounded-xl text-[11px] font-bold transition-all duration-300 group",
+              isBgEditOpen 
+                ? "bg-primary text-white shadow-lg" 
+                : "bg-white/40 dark:bg-zinc-900/50 border border-gray-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-800"
+            )}
+          >
+            <ImageIcon size={14} className={cn("transition-transform", isBgEditOpen ? "scale-110" : "group-hover:rotate-12")} />
+            <span>背景</span>
+          </button>
+
           <button
             onClick={onShare}
-            className="w-full flex items-center justify-center space-x-2 py-3 bg-white/40 dark:bg-zinc-900/50 border border-gray-300 dark:border-zinc-800 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 group"
+            className="flex items-center justify-center space-x-1.5 py-2.5 bg-white/40 dark:bg-zinc-900/50 border border-gray-300 dark:border-zinc-800 rounded-xl text-[11px] font-bold text-zinc-600 dark:text-zinc-400 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 group"
           >
             <Share2 size={14} className="group-hover:scale-110 transition-transform" />
-            <span>分享本站</span>
+            <span>分享</span>
           </button>
         </div>
       </div>
