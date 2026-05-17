@@ -26,7 +26,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ posts, onResultClick }) =>
       const filtered = posts.filter(post => 
         post.metadata.title.toLowerCase().includes(q.toLowerCase()) || 
         post.metadata.description.toLowerCase().includes(q.toLowerCase()) ||
-        post.metadata.tags?.some(tag => tag.toLowerCase().includes(q.toLowerCase())) ||
+        post.metadata.tags?.some(tag => tag && typeof tag === 'string' && tag.toLowerCase().includes(q.toLowerCase())) ||
         post.content?.toLowerCase().includes(q.toLowerCase())
       );
       setResults(filtered);

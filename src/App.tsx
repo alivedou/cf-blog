@@ -418,7 +418,8 @@ export default function App() {
                           <div className="space-y-12 max-w-3xl mx-auto py-10">
                             {Object.entries(
                               posts.reduce((acc, post) => {
-                                const date = new Date(post.date);
+                                const d = post.date ? new Date(post.date) : new Date();
+                                const date = isNaN(d.getTime()) ? new Date() : d;
                                 const year = date.getFullYear();
                                 const month = date.getMonth() + 1; // 1-12
                                 if (!acc[year]) acc[year] = {};
@@ -468,9 +469,9 @@ export default function App() {
                           </div>
                         ) : activeTab === 'tags' && !selectedTag ? (
                           <div className="flex flex-wrap gap-4 py-10">
-                            {Array.from(new Set(posts.flatMap(p => p.tags || []).map(t => t.toLowerCase()))).map(lowerTag => {
-                              const originalTag = posts.flatMap(p => p.tags || []).find(t => t.toLowerCase() === lowerTag);
-                              const count = posts.filter(p => p.tags?.some(t => t.toLowerCase() === lowerTag)).length;
+                            {Array.from(new Set(posts.flatMap(p => (p.tags || []).filter(tag => tag && typeof tag === 'string')).map(t => t.toLowerCase()))).map(lowerTag => {
+                              const originalTag = posts.flatMap(p => (p.tags || []).filter(tag => tag && typeof tag === 'string')).find(t => t.toLowerCase() === lowerTag);
+                              const count = posts.filter(p => (p.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase() === lowerTag)).length;
                               return (
                                 <button
                                   key={lowerTag}
@@ -488,13 +489,13 @@ export default function App() {
                             {posts.filter(post => {
                               if (activeTab === 'home') return true;
                               if (activeTab === 'tags' && selectedTag) {
-                                return post.tags?.some(t => t.toLowerCase() === selectedTag.toLowerCase());
+                                return (post.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase() === selectedTag.toLowerCase());
                               }
                               return true;
                             }).length > 0 ? posts.filter(post => {
                               if (activeTab === 'home') return true;
                               if (activeTab === 'tags' && selectedTag) {
-                                return post.tags?.some(t => t.toLowerCase() === selectedTag.toLowerCase());
+                                return (post.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase() === selectedTag.toLowerCase());
                               }
                               return true;
                             }).map(post => (
