@@ -74,16 +74,22 @@ export default function App() {
     showNotification("评论功能正在开发中...");
   };
 
-  // 屏幕尺寸监听：实现移动端侧边栏的自动收纳
+  // 屏幕尺寸监听：实现移动端侧边栏的自动收纳，并防止虚拟键盘弹出触发收缩
   useEffect(() => {
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
+      const currentWidth = window.innerWidth;
+      // 只有在屏幕宽度发生本质变化，或跨越 1024px 临界点时才处理
+      if (currentWidth !== lastWidth) {
+        if (currentWidth >= 1024 && lastWidth < 1024) {
+          setIsSidebarOpen(true);
+        } else if (currentWidth < 1024 && lastWidth >= 1024) {
+          setIsSidebarOpen(false);
+        }
+        lastWidth = currentWidth;
       }
     };
-    handleResize(); // 初始检查
+    // 取消了对 handleResize() 的无脑初始调用，因为 state 初始值已经处理过桌面端/移动端逻辑
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
