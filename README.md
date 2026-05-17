@@ -7,7 +7,7 @@ Author: adou | [alivedou@outlook.com](mailto:alivedou@outlook.com)
 
 ## 部署后的效果图如下：
 
-！[项目效果图](https://i.urusai.cc/nzO6z.png)
+！[项目部署效果图](https://i.urusai.cc/2u1Ar.png)
 
 ---
 

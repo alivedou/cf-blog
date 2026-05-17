@@ -5,7 +5,7 @@ draft: false
 sticky: 1
 tags: ["置顶测试"]
 description: 这是一篇关于置顶功能的测试文章，它将会在主页的最上方展示。
-image: "https://i.urusai.cc/wx3iV.jpg"
+image: "public/images/kun.jpg"
 ---
 
 ## 欢迎使用置顶功能！

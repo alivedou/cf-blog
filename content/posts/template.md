@@ -4,7 +4,7 @@ date: "2026-05-16"
 draft: "false"
 tags: ["markdown","写作模板"]
 description: "文章内容的简单概括"
-image: "https://i.urusai.cc/wx3iV.jpg"
+image: "public/images/kun.jpg"
 ---
 
 ## 👋 欢迎开始写作！
