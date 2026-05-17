@@ -1,9 +1,13 @@
 # ✨ 极简 AI 协作博客模板 (CF-blog)
 
-> **小白也能轻松上手的个人博客系统。** 无需学习复杂的后端，只需修改配置文件和 Markdown，即可拥有属于自己的数字花园。
+> **小白也能轻松上手的个人静态博客网站。** 无需学习复杂的后端，只需修改配置文件和 Markdown，即可拥有属于自己的数字花园。
 
 Author: adou | [alivedou@outlook.com](mailto:alivedou@outlook.com)
 项目开源地址：[https://github.com/alivedou/cf-blog](https://github.com/alivedou/cf-blog)
+
+## 部署后的效果图如下：
+
+！[项目效果图](https://i.urusai.cc/nzO6z.png)
 
 ---
 
