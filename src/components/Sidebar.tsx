@@ -3,9 +3,9 @@
  * 侧边栏组件：包含个人头像、主导航菜单、社交链接以及背景图设置。
  */
 import React from 'react';
-import { ExternalLink, Image as ImageIcon, X, Share2 } from 'lucide-react';
+import { ExternalLink, Image as ImageIcon, X, Share2, Mail } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-import { AUTHOR_NAME, AUTHOR_TITLE, AUTHOR_AVATAR, MENU_ITEMS, RECOMMENDED_LINKS } from '../user-config';
+import { AUTHOR_NAME, AUTHOR_TITLE, AUTHOR_AVATAR, MENU_ITEMS, RECOMMENDED_LINKS, AUTHOR_CONTACT } from '../user-config';
 
 /** 侧边栏需要的属性定义 */
 interface SidebarProps {
@@ -43,7 +43,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
             className="w-24 h-24 rounded-full object-cover mb-4 shadow-lg ring-4 ring-white dark:ring-zinc-800"
           />
           <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{AUTHOR_NAME}</h1>
-          <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1 font-medium">{AUTHOR_TITLE}</p>
+          <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1 font-medium mb-4">{AUTHOR_TITLE}</p>
+
+          {AUTHOR_CONTACT && (
+            <a 
+              href={AUTHOR_CONTACT}
+              className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 text-xs font-bold transition-colors"
+            >
+              <Mail size={14} className="mr-1.5" />
+              联系我
+            </a>
+          )}
         </div>
 
 

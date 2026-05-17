@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 // @ts-ignore - 预构建脚本生成的文件，可能在首次运行前不存在
 import postsData from './posts-data.json';
-import { ABOUT_PAGE_CONFIG, AUTHOR_NAME, SITE_TITLE, THEME_COLOR, SITE_BG_OPACITY, POST_BOTTOM_IMAGES, LEANCLOUD_CONFIG } from './user-config';
+import { ABOUT_PAGE_CONFIG, AUTHOR_NAME, SITE_TITLE, THEME_COLOR, SITE_BG_OPACITY, POST_BOTTOM_IMAGES, LEANCLOUD_CONFIG, HOME_PAGE_DESCRIPTION } from './user-config';
 import { trackPageView } from './lib/leancloud';
 
 export default function App() {
@@ -438,7 +438,7 @@ export default function App() {
                       </h1>
                       <p className="text-xl text-gray-500 dark:text-zinc-500 font-medium">
                         {activeTab === 'home' 
-                          ? '分享关于设计、技术与创意过程的思考。' 
+                          ? HOME_PAGE_DESCRIPTION 
                           : activeTab === 'tags' ? (selectedTag ? `标签为 "${selectedTag}" 的文章` : '浏览所有话题。')
                           : activeTab === 'archive' ? '回顾过往的文章动态。'
                           : `正在探索 ${activeTab}。`}
