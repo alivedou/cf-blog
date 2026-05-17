@@ -42,7 +42,12 @@ export default function App() {
     return "";
   });
   const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return true;
+  });
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -85,6 +90,31 @@ export default function App() {
 
   useEffect(() => {
     fetchPosts();
+    // 初始路由解析：允许直接通过 /post/slug 访问文章
+    const path = window.location.pathname;
+    if (path.startsWith('/post/')) {
+      const slug = path.replace('/post/', '').split('?')[0].split('#')[0];
+      if (slug) {
+        handlePostClick(slug, true);
+      }
+    }
+  }, []);
+
+  // 监听浏览器后退/前进
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/post/')) {
+        const slug = path.replace('/post/', '').split('?')[0].split('#')[0];
+        if (slug) {
+          handlePostClick(slug, true);
+        }
+      } else {
+        setSelectedPost(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   // 监听深色模式变化并应用到 html 根元素
@@ -126,7 +156,10 @@ export default function App() {
   };
 
   /** 3. 文章点击处理：获取全文内容并开启阅读量追踪 */
-  const handlePostClick = async (slug: string) => {
+  const handlePostClick = async (slug: string, skipPushState = false) => {
+    if (!skipPushState) {
+      window.history.pushState({}, '', `/post/${slug}`);
+    }
     setLoading(true);
     setCurrentViews(0); // 切换文章时重置阅读量显示
     try {
@@ -238,6 +271,9 @@ export default function App() {
           activeTab={activeTab} 
           setActiveTab={(tab) => {
             setActiveTab(tab);
+            if (selectedPost) {
+              window.history.pushState({}, '', '/');
+            }
             setSelectedPost(null);
             setSelectedTag(null);
             if (window.innerWidth < 1024) setIsSidebarOpen(false);
@@ -261,7 +297,10 @@ export default function App() {
                 className="max-w-4xl mx-auto"
               >
                 <button 
-                  onClick={() => setSelectedPost(null)}
+                  onClick={() => {
+                    setSelectedPost(null);
+                    window.history.pushState({}, '', '/');
+                  }}
                   className="flex items-center text-sm font-bold text-gray-500 hover:text-primary transition-colors mb-10 group"
                 >
                   <ChevronLeft className="mr-2 group-hover:-translate-x-1 transition-transform" size={20} />
@@ -286,6 +325,7 @@ export default function App() {
                           setSelectedPost(null);
                           setActiveTab('tags');
                           setSelectedTag(tag);
+                          window.history.pushState({}, '', '/');
                         }}
                         className="px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary/20 transition-colors"
                       >
