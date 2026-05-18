@@ -2,15 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "CyberLog: 更新当前文章日期",
+      "label": "🔄 同步文章日期 (Sync Post Dates)",
       "type": "shell",
-      "command": "node scripts/update-post-date.js ${relativeFile}",
-      "group": "none",
+      "command": "npm run sync-date",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "presentation": {
-        "reveal": "silent",
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
+        "reveal": "always",
+        "panel": "new"
       },
       "problemMatcher": []
     }

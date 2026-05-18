@@ -38,13 +38,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, se
       {/* 侧边栏主内容区：设置 flex-1 并开启滚动，防止内容过多显示不全 */}
       <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
         {/* 博主个人名片展示 */}
-        <div className="flex flex-col items-center mb-8 text-center">
+        <div 
+          className="flex flex-col items-center mb-8 text-center cursor-pointer group/card"
+          onClick={() => setActiveTab('home')}
+        >
           <img 
-            src={AUTHOR_AVATAR}
+            src={AUTHOR_AVATAR.startsWith('public/') ? AUTHOR_AVATAR.replace('public/', '/') : AUTHOR_AVATAR}
             alt="avatar"
-            className="w-24 h-24 rounded-full object-cover mb-4 shadow-lg ring-4 ring-white dark:ring-zinc-800"
+            className="w-24 h-24 rounded-full object-cover mb-4 shadow-lg ring-4 ring-white dark:ring-zinc-800 group-hover/card:scale-105 transition-transform"
           />
-          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{AUTHOR_NAME}</h1>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100 group-hover/card:text-primary transition-colors">{AUTHOR_NAME}</h1>
           <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1 font-medium mb-4">{AUTHOR_TITLE}</p>
 
           {AUTHOR_CONTACT && (

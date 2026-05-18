@@ -39,6 +39,15 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick, isSticky = fa
       
       {/* 文字内容区域 */}
       <div className="p-6">
+        {/* 分类展示 */}
+        <div className="flex items-center space-x-2 mb-2">
+          {(post.categories || []).map(cat => (
+            <span key={cat} className="px-2 py-0.5 bg-primary text-white rounded text-[9px] font-bold uppercase tracking-wider">
+              {cat}
+            </span>
+          ))}
+        </div>
+        
         {/* 标签展示：最多展示前两个 */}
         <div className="flex items-center space-x-3 mb-3 text-xs font-medium text-primary">
           {(post.tags || []).slice(0, 2).map(tag => (

@@ -10,8 +10,10 @@ export interface PostMetadata {
   description: string; // 简短描述
   image?: string;      // 封面图 URL (可选)
   tags?: string[];     // 标签数组 (可选)
+  categories?: string[]; // 分类数组 (可选)
   slug: string;        // 唯一识别路径（通常是文件名）
   sticky?: number | null; // 置顶权重，数字越小越靠前
+  updated?: string;    // 最后更新日期 (可选)
 }
 
 /** 文章详情：包含元数据和全文 Markdown 内容 */

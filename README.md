@@ -27,8 +27,9 @@ Author: adou | [alivedou@outlook.com](mailto:alivedou@outlook.com)
 *   **🖋️ 写作爽**: 只需写 Markdown 丢进文件夹，网站自动更新。
 *   **🎨 随心改**: 内置主题换色、背景透明度调节、侧边栏实时背景切换。
 *   **📌 置顶文章**: 支持将精选文章置顶至主页的显眼推荐位置，置顶顺序可由数字权重自由调节。
-*   **🏷️ 多标签**: 每篇文章支持添加多个标签，分类检索更方便。（注：请确保标签值不为空）
+*   **🏷️ 多标签与多分类**: 每篇文章支持添加多个标签与多个分类，检索更方便。（注：请确保标签和分类不为空）
 *   **🚀 新功能**: 
+    *   **分类视图**: 新增独立的分类页面，支持按不同主题（Categories）进行文章归类展示。
     *   **返回顶部/底部**: 极速导航，阅读体验更顺滑。
     *   **时间线归档**: 按年、月自动组织文章，回忆不再凌乱。
     *   **多码支持**: 底部支持展示多个二维码（如微信号+打赏码）。
@@ -64,7 +65,7 @@ Author: adou | [alivedou@outlook.com](mailto:alivedou@outlook.com)
 **3. 如何添加文章与修改信息？**
 *   **修改个人信息**：点击您 GitHub 仓库中的 `blog.config.ts` 文件，点击右上角的“铅笔”图标进行编辑，修改名称、头像、透明度等。
 *   **添加文章**：点击 `content/posts/` 目录，点击 **Add file** -> **Create new file**。文件名以 `.md` 结尾。
-*   **多标签技巧**：在文章头部的 `tags` 字段中，使用类似 `["标签1", "标签2"]` 的格式即可添加多个标签。
+*   **多标签与多分类技巧**：在文章头部的 `tags` 字段中使用 `["标签1", "标签2"]`，在 `categories` 字段中使用 `["分类1", "分类2"]` 即可。
 *   **如何置顶文章**：在文章头部添加 `sticky: 1` 即可将文章置顶，数字越小越靠前。不写该行表示普通文章。
 *   **关键点**：您在 GitHub 上执行的每一次改动，Cloudflare 都会自动帮你同步到线上网站！
 
@@ -78,13 +79,15 @@ Author: adou | [alivedou@outlook.com](mailto:alivedou@outlook.com)
 *   在 Ubuntu 中执行 `sudo apt update && sudo apt install nodejs npm` (推荐使用 Node 20+)。
 *   **PS**: 若 WSL 密码丢失，请询问 [DeepSeek](https://chat.deepseek.com/) 寻找“WSL 重置密码方法”。
 
-**2. 极客写作：自动更新日期 (New!)**
+**2. 极客写作：自动更新日期 (VS Code 一键同步)**
 为了省去手动修改文章日期的烦恼，本项目内置了自动日期同步脚本：
-*   **手动运行**: 在根目录执行 `node scripts/update-post-date.js content/posts/你的文章.md`。
 *   **VS Code 自动化 (推荐)**: 
     *   按下 `Ctrl + Shift + B` (Windows) 或 `Cmd + Shift + B` (Mac)。
-    *   选择 `cf-blog: 更新当前文章日期`。
-    *   脚本会自动检测当前打开的文件，并将其 frontmatter 中的 `date` 字段更新为今天。
+    *   选择 `🔄 同步文章日期 (Sync Post Dates)`。
+    *   脚本会自动扫描 `content/posts/` 目录：
+        *   若 Markdown 包含 `updated` 字段，则更新为今日。
+        *   若只有 `date` 字段，则会自动在其后插入 `updated` 改为今日。
+    *   **展示效果**: 文章详情页将同时显示“发布日期”与“最后修改日期”。
 
 **3. 本地调试**
 *   使用 **VSCode** 打开项目。

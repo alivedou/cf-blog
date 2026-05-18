@@ -8,12 +8,12 @@ import { PostCard } from './components/PostCard';
 import { SearchBar } from './components/Search';
 import { PostMetadata, PostDetail } from './types';
 import Markdown from 'react-markdown';
-import { ChevronLeft, Share2, MessageCircle, Sun, Moon, Menu as MenuIcon, X, Eye, Image as ImageIcon, ArrowUp, ArrowDown, Pin } from 'lucide-react';
+import { ChevronLeft, Share2, MessageCircle, Sun, Moon, Menu as MenuIcon, X, Eye, Image as ImageIcon, ArrowUp, ArrowDown, Pin, Layout } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 // @ts-ignore - 预构建脚本生成的文件，可能在首次运行前不存在
 import postsData from './posts-data.json';
-import { ABOUT_PAGE_CONFIG, AUTHOR_NAME, SITE_TITLE, THEME_COLOR, SITE_BG_OPACITY, POST_BOTTOM_IMAGES, LEANCLOUD_CONFIG, HOME_PAGE_DESCRIPTION } from '@/blog.config';
+import { ABOUT_PAGE_CONFIG, AUTHOR_NAME, AUTHOR_AVATAR, SITE_TITLE, THEME_COLOR, SITE_BG_OPACITY, POST_BOTTOM_IMAGES, LEANCLOUD_CONFIG, HOME_PAGE_DESCRIPTION } from '@/blog.config';
 import { trackPageView } from './lib/leancloud';
 
 export default function App() {
@@ -49,7 +49,24 @@ export default function App() {
     return true;
   });
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // 监听滚动进度
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight <= 0) {
+        setScrollProgress(0);
+        return;
+      }
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // 提示信息处理
   const showNotification = (message: string) => {
@@ -103,6 +120,34 @@ export default function App() {
       if (slug) {
         handlePostClick(slug, true);
       }
+    } else if (path.startsWith('/tag/')) {
+      const tagName = path.replace('/tag/', '').split('?')[0].split('#')[0];
+      if (tagName) {
+        setActiveTab('tags');
+        setSelectedTag(decodeURIComponent(tagName));
+        setSelectedCategory(null);
+        setSelectedPost(null);
+      }
+    } else if (path.startsWith('/category/')) {
+      const catName = path.replace('/category/', '').split('?')[0].split('#')[0];
+      if (catName) {
+        setActiveTab('categories');
+        setSelectedCategory(decodeURIComponent(catName));
+        setSelectedTag(null);
+        setSelectedPost(null);
+      }
+    } else if (path === '/about') {
+      setActiveTab('about');
+      setSelectedPost(null);
+    } else if (path === '/archive') {
+      setActiveTab('archive');
+      setSelectedPost(null);
+    } else if (path === '/tags') {
+      setActiveTab('tags');
+      setSelectedPost(null);
+    } else if (path === '/categories') {
+      setActiveTab('categories');
+      setSelectedPost(null);
     }
   }, []);
 
@@ -115,7 +160,36 @@ export default function App() {
         if (slug) {
           handlePostClick(slug, true);
         }
+      } else if (path.startsWith('/tag/')) {
+        const tagName = path.replace('/tag/', '').split('?')[0].split('#')[0];
+        if (tagName) {
+          setActiveTab('tags');
+          setSelectedTag(decodeURIComponent(tagName));
+          setSelectedCategory(null);
+          setSelectedPost(null);
+        }
+      } else if (path.startsWith('/category/')) {
+        const catName = path.replace('/category/', '').split('?')[0].split('#')[0];
+        if (catName) {
+          setActiveTab('categories');
+          setSelectedCategory(decodeURIComponent(catName));
+          setSelectedTag(null);
+          setSelectedPost(null);
+        }
+      } else if (path === '/about') {
+        setActiveTab('about');
+        setSelectedPost(null);
+      } else if (path === '/archive') {
+        setActiveTab('archive');
+        setSelectedPost(null);
+      } else if (path === '/tags') {
+        setActiveTab('tags');
+        setSelectedPost(null);
+      } else if (path === '/categories') {
+        setActiveTab('categories');
+        setSelectedPost(null);
       } else {
+        setActiveTab('home');
         setSelectedPost(null);
       }
     };
@@ -242,21 +316,53 @@ export default function App() {
         )}
       </button>
 
-      {/* 回到顶部/底部 快速导航按钮 */}
-      <div className="fixed bottom-8 right-6 z-50 flex flex-col space-y-3">
+      {/* 极简侧边导航：仅箭头，跟随滚动 */}
+      <div className="fixed top-20 bottom-20 right-2 z-50 hidden md:flex flex-col items-center pointer-events-none">
+        {/* 背景细线 (模拟滚动条轨道) */}
+        <div className="absolute inset-y-0 w-px bg-gray-300 dark:bg-zinc-700 opacity-20" />
+        
+        {/* 指示当前进度的发光线段 */}
+        <div 
+          className="absolute top-0 w-px bg-primary shadow-[0_0_8px_rgba(var(--theme-primary-rgb),0.5)] transition-all duration-300"
+          style={{ height: `${scrollProgress}%` }}
+        />
+
+        {/* 同步移动的极简按钮组 */}
+        <div 
+          className="absolute left-1/2 -translate-x-1/2 transition-all duration-500 ease-out flex flex-col items-center space-y-4 pointer-events-auto"
+          style={{ top: `${scrollProgress}%`, transform: `translate(-50%, -${scrollProgress}%)` }}
+        >
+          <button
+            onClick={scrollToTop}
+            className="text-gray-400 hover:text-primary transition-all active:scale-75 p-1"
+            title="回到顶部"
+          >
+            <ArrowUp size={16} strokeWidth={3} />
+          </button>
+          
+          <button
+            onClick={scrollToBottom}
+            className="text-gray-400 hover:text-primary transition-all active:scale-75 p-1"
+            title="前往底部"
+          >
+            <ArrowDown size={16} strokeWidth={3} />
+          </button>
+        </div>
+      </div>
+
+      {/* 手机端专用：固定在右下角的简化按钮 (因为侧边进度条在手机端太挤) */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 md:hidden">
         <button
           onClick={scrollToTop}
-          className="p-3 rounded-full bg-white/40 dark:bg-zinc-800/40 backdrop-blur-md border border-gray-200 dark:border-zinc-700 shadow-sm text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-all group"
-          title="回到顶部"
+          className="p-2.5 rounded-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md border border-gray-200 dark:border-zinc-800 shadow-md text-gray-500"
         >
-          <ArrowUp size={18} className="group-hover:-translate-y-0.5 transition-transform" />
+          <ArrowUp size={16} />
         </button>
         <button
           onClick={scrollToBottom}
-          className="p-3 rounded-full bg-white/40 dark:bg-zinc-800/40 backdrop-blur-md border border-gray-200 dark:border-zinc-700 shadow-sm text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-all group"
-          title="前往底部"
+          className="p-2.5 rounded-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md border border-gray-200 dark:border-zinc-800 shadow-md text-gray-500"
         >
-          <ArrowDown size={18} className="group-hover:translate-y-0.5 transition-transform" />
+          <ArrowDown size={16} />
         </button>
       </div>
 
@@ -277,11 +383,14 @@ export default function App() {
           activeTab={activeTab} 
           setActiveTab={(tab) => {
             setActiveTab(tab);
-            if (selectedPost) {
+            if (tab === 'home') {
               window.history.pushState({}, '', '/');
+            } else {
+              window.history.pushState({}, '', `/${tab}`);
             }
             setSelectedPost(null);
             setSelectedTag(null);
+            setSelectedCategory(null);
             if (window.innerWidth < 1024) setIsSidebarOpen(false);
           }}
           bgImage={bgImage}
@@ -325,6 +434,20 @@ export default function App() {
 
                   <header className="mb-12">
                     <div className="flex items-center space-x-3 mb-6">
+                      {(selectedPost.metadata.categories || []).map(cat => (
+                        <button 
+                          key={cat} 
+                          onClick={() => {
+                            setSelectedPost(null);
+                            setActiveTab('categories');
+                            setSelectedCategory(cat);
+                            window.history.pushState({}, '', `/category/${cat}`);
+                          }}
+                          className="px-3 py-1 bg-primary text-white rounded-full text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-colors"
+                        >
+                          {cat}
+                        </button>
+                      ))}
                       {(selectedPost.metadata.tags || []).map(tag => (
                         <button 
                           key={tag} 
@@ -332,7 +455,7 @@ export default function App() {
                             setSelectedPost(null);
                             setActiveTab('tags');
                             setSelectedTag(tag);
-                            window.history.pushState({}, '', '/');
+                            window.history.pushState({}, '', `/tag/${tag}`);
                           }}
                           className="px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary/20 transition-colors"
                         >
@@ -345,22 +468,40 @@ export default function App() {
                     </h1>
                     <div className="mt-8 flex items-center justify-between pb-8 border-b border-gray-100 dark:border-zinc-800">
                       <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 rounded-full bg-linear-to-r from-primary to-purple-600 flex items-center justify-center text-white font-bold text-xs">
-                          {AUTHOR_NAME}
-                        </div>
+                        {AUTHOR_AVATAR ? (
+                          <img 
+                            src={AUTHOR_AVATAR.startsWith('public/') ? AUTHOR_AVATAR.replace('public/', '/') : AUTHOR_AVATAR} 
+                            alt={AUTHOR_NAME}
+                            className="w-10 h-10 rounded-full object-cover shadow-sm ring-2 ring-white/20 dark:ring-zinc-700/30"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-linear-to-r from-primary to-purple-600 flex items-center justify-center text-white font-black text-lg shadow-inner ring-2 ring-white/20">
+                            {AUTHOR_NAME.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                         <div>
                           <p className="text-sm font-bold text-gray-900 dark:text-zinc-100">{AUTHOR_NAME}</p>
-                          <div className="flex items-center space-x-3 mt-0.5">
-                            <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
+                          <div className="flex flex-col md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-4 mt-1">
+                            <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium flex items-center">
+                              <span className="opacity-60 mr-1">发布于</span>
                               {(() => {
                                 const d = new Date(selectedPost.metadata.date);
-                                return isNaN(d.getTime()) ? selectedPost.metadata.date : `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, '0')}月${String(d.getDate()).padStart(2, '0')}日`;
+                                return isNaN(d.getTime()) ? selectedPost.metadata.date : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                               })()}
                             </p>
+                            {selectedPost.metadata.updated && selectedPost.metadata.updated !== selectedPost.metadata.date && (
+                              <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium flex items-center">
+                                <span className="opacity-60 mr-1">最后修改</span>
+                                {(() => {
+                                  const d = new Date(selectedPost.metadata.updated as string);
+                                  return isNaN(d.getTime()) ? selectedPost.metadata.updated : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                                })()}
+                              </p>
+                            )}
                             {LEANCLOUD_CONFIG.enabled && currentViews > 0 && (
                               <span className="flex items-center text-[10px] text-gray-400 font-medium">
-                                <Eye size={12} className="mr-1" />
-                                {currentViews} 次阅读
+                                <Eye size={12} className="mr-1 opacity-60" />
+                                {currentViews} 阅
                               </span>
                             )}
                           </div>
@@ -385,7 +526,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 文章底部自定义图片列表 (二维码等) - 已支持循环渲染 */}
+          {/* 文章底部自定义图片列表 (二维码等) - 已支持循环渲染 */}
                   {POST_BOTTOM_IMAGES && POST_BOTTOM_IMAGES.length > 0 && (
                     <div className="mt-16 pt-12 border-t border-gray-100 dark:border-zinc-800 flex flex-wrap justify-center gap-12">
                       {POST_BOTTOM_IMAGES.filter(img => img.enabled).map((img, idx) => (
@@ -394,7 +535,7 @@ export default function App() {
                             <div className="absolute -inset-4 bg-primary/10 rounded-[2rem] blur-2xl group-hover:bg-primary/20 transition-all duration-500" />
                             <div className="relative p-2 bg-white dark:bg-zinc-800 rounded-2xl shadow-xl border border-gray-100 dark:border-zinc-700">
                               <img 
-                                src={img.url} 
+                                src={img.url.startsWith('public/') ? img.url.replace('public/', '/') : img.url} 
                                 alt={img.label} 
                                 className="w-32 h-32 md:w-36 md:h-36 object-cover rounded-xl"
                               />
@@ -448,6 +589,7 @@ export default function App() {
                       <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-4 tracking-tighter">
                         {activeTab === 'home' ? '探索故事' 
                          : activeTab === 'tags' ? (selectedTag ? `# ${selectedTag}` : '浏览标签')
+                         : activeTab === 'categories' ? (selectedCategory ? `📂 ${selectedCategory}` : '全部分类')
                          : activeTab === 'archive' ? '归档'
                          : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                       </h1>
@@ -455,12 +597,27 @@ export default function App() {
                         {activeTab === 'home' 
                           ? HOME_PAGE_DESCRIPTION 
                           : activeTab === 'tags' ? (selectedTag ? `标签为 "${selectedTag}" 的文章` : '浏览所有话题。')
+                          : activeTab === 'categories' ? (selectedCategory ? `分类在 "${selectedCategory}" 下的文章` : '按主题浏览文章。')
                           : activeTab === 'archive' ? '回顾过往的文章动态。'
                           : `正在探索 ${activeTab}。`}
                       </p>
                       {activeTab === 'tags' && selectedTag && (
                         <button 
-                          onClick={() => setSelectedTag(null)}
+                          onClick={() => {
+                            setSelectedTag(null);
+                            window.history.pushState({}, '', '/tags');
+                          }}
+                          className="mt-4 text-sm font-bold text-primary hover:opacity-80 flex items-center"
+                        >
+                          <X size={14} className="mr-1" /> 清除筛选
+                        </button>
+                      )}
+                      {activeTab === 'categories' && selectedCategory && (
+                        <button 
+                          onClick={() => {
+                            setSelectedCategory(null);
+                            window.history.pushState({}, '', '/categories');
+                          }}
                           className="mt-4 text-sm font-bold text-primary hover:opacity-80 flex items-center"
                         >
                           <X size={14} className="mr-1" /> 清除筛选
@@ -532,6 +689,25 @@ export default function App() {
                               </div>
                             ))}
                           </div>
+                        ) : activeTab === 'categories' && !selectedCategory ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
+                            {Array.from(new Set(posts.flatMap(p => (p.categories || []).filter(cat => cat && typeof cat === 'string')))).map(cat => {
+                              const count = posts.filter(p => (p.categories || []).includes(cat)).length;
+                              return (
+                                <button
+                                  key={cat}
+                                  onClick={() => setSelectedCategory(cat)}
+                                  className="group p-8 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary transition-all text-left"
+                                >
+                                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                    <Layout size={24} />
+                                  </div>
+                                  <h3 className="text-xl font-black text-gray-900 dark:text-zinc-100 mb-2">{cat}</h3>
+                                  <p className="text-sm text-gray-500 dark:text-zinc-500 font-medium">{count} 篇文章</p>
+                                </button>
+                              );
+                            })}
+                          </div>
                         ) : activeTab === 'tags' && !selectedTag ? (
                           <div className="flex flex-wrap gap-4 py-10">
                             {Array.from(new Set(posts.flatMap(p => (p.tags || []).filter(tag => tag && typeof tag === 'string')).map(t => t.toLowerCase()))).map(lowerTag => {
@@ -583,12 +759,18 @@ export default function App() {
                                   if (activeTab === 'tags' && selectedTag) {
                                     return (post.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase() === selectedTag.toLowerCase());
                                   }
+                                  if (activeTab === 'categories' && selectedCategory) {
+                                    return (post.categories || []).includes(selectedCategory);
+                                  }
                                   return true;
                                 }).length > 0 ? posts.filter(post => {
                                   if (activeTab === 'home' && post.sticky !== null && post.sticky !== undefined) return false;
                                   if (activeTab === 'home') return true;
                                   if (activeTab === 'tags' && selectedTag) {
                                     return (post.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase() === selectedTag.toLowerCase());
+                                  }
+                                  if (activeTab === 'categories' && selectedCategory) {
+                                    return (post.categories || []).includes(selectedCategory);
                                   }
                                   return true;
                                 }).map(post => (

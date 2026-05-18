@@ -37,9 +37,13 @@ function generatePosts() {
             ? (data.date instanceof Date ? data.date.toISOString() : data.date) 
             : stats.mtime.toISOString(),
           tags: data.tags || [],
+          categories: data.categories || [],
           description: data.description || content.substring(0, 150).replace(/[#*`]/g, '') + '...',
           image: data.image || null,
-          sticky: typeof data.sticky === 'number' ? data.sticky : (data.sticky ? 1 : null)
+          sticky: typeof data.sticky === 'number' ? data.sticky : (data.sticky ? 1 : null),
+          updated: data.updated 
+            ? (data.updated instanceof Date ? data.updated.toISOString() : data.updated) 
+            : (data.date ? (data.date instanceof Date ? data.date.toISOString() : data.date) : stats.mtime.toISOString())
         },
         content
       };
